@@ -1,0 +1,130 @@
+/**
+ * DFS Order Preview — Styles tooltip Back-Office
+ * Toutes les règles préfixées .dfs-op- : zéro interférence avec le BO PS9.
+ *
+ * @author Cyrille Mohr - Digital Food System
+ */
+
+/* -------------------------------------------------------------------------
+   Container principal
+   ------------------------------------------------------------------------- */
+
+#dfs-op-tooltip {
+    position: absolute;
+    z-index: 9999;
+    min-width: 200px;
+    max-width: 320px;
+    background: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #363a41;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+}
+
+#dfs-op-tooltip.dfs-op-tooltip--hidden {
+    display: none;
+}
+
+/* -------------------------------------------------------------------------
+   Contenu
+   ------------------------------------------------------------------------- */
+
+.dfs-op-block {
+    padding: 10px 14px;
+}
+
+.dfs-op-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    padding: 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfs-op-row--name {
+    font-weight: 600;
+    font-size: 13.5px;
+}
+
+.dfs-op-product-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfs-op-qty {
+    flex-shrink: 0;
+    color: #6c868e;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* -------------------------------------------------------------------------
+   Click & Collect
+   ------------------------------------------------------------------------- */
+
+.dfs-op-badge-pickup {
+    display: inline-block;
+    background: #2cb1c1;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.dfs-op-store-name {
+    font-weight: 600;
+    font-size: 13.5px;
+    margin-bottom: 3px;
+}
+
+.dfs-op-slot {
+    font-size: 12px;
+    color: #6c868e;
+}
+
+/* -------------------------------------------------------------------------
+   États loading / error
+   ------------------------------------------------------------------------- */
+
+.dfs-op-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+}
+
+.dfs-op-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #e1e1e1;
+    border-top-color: #2cb1c1;
+    border-radius: 50%;
+    animation: dfs-op-spin 0.6s linear infinite;
+}
+
+@keyframes dfs-op-spin {
+    to { transform: rotate(360deg); }
+}
+
+.dfs-op-error,
+.dfs-op-empty {
+    padding: 10px 14px;
+    color: #9c9c9c;
+    font-size: 12px;
+    font-style: italic;
+    margin: 0;
+}

@@ -1,0 +1,12 @@
+# Dépendances PHP (générées, non versionnées)
+/vendor/
+
+# Caches et fichiers système
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp

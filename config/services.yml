@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    DfsOrderpreview\Controller\Admin\AjaxTooltipController:
+        public: true
+        calls:
+            - [setContainer, ['@service_container']]
+        tags:
+            - { name: 'controller.service_arguments' }

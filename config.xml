@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>dfs_orderpreview</name>
+    <displayName><![CDATA[DFS Order Preview]]></displayName>
+    <version><![CDATA[1.0.0]]></version>
+    <description><![CDATA[Tooltips au survol dans la liste des commandes BO]]></description>
+    <author><![CDATA[Cyrille Mohr - Digital Food System]]></author>
+    <tab><![CDATA[administration]]></tab>
+    <is_configurable>0</is_configurable>
+    <need_instance>0</need_instance>
+    <limited_countries></limited_countries>
+</module>

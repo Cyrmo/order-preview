@@ -1,0 +1,23 @@
+dfs_op_tooltip_products:
+    path: /dfs-orderpreview/tooltip/products/{orderId}
+    methods: [GET]
+    defaults:
+        _controller: 'DfsOrderpreview\Controller\Admin\AjaxTooltipController::productsAction'
+    requirements:
+        orderId: \d+
+
+dfs_op_tooltip_delivery:
+    path: /dfs-orderpreview/tooltip/delivery/{orderId}
+    methods: [GET]
+    defaults:
+        _controller: 'DfsOrderpreview\Controller\Admin\AjaxTooltipController::deliveryAction'
+    requirements:
+        orderId: \d+
+
+dfs_op_tooltip_customer:
+    path: /dfs-orderpreview/tooltip/customer/{orderId}
+    methods: [GET]
+    defaults:
+        _controller: 'DfsOrderpreview\Controller\Admin\AjaxTooltipController::customerAction'
+    requirements:
+        orderId: \d+

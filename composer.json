@@ -1,0 +1,24 @@
+{
+    "name": "digitalfoodsystem/dfs-orderpreview",
+    "description": "DFS Order Preview — Tooltips sur la liste commandes PrestaShop 9",
+    "type": "prestashop-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Cyrille Mohr",
+            "email": "contact@digital-food-system.fr",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DfsOrderpreview\\": "src/"
+        }
+    },
+    "config": {
+        "prepend-autoloader": false
+    },
+    "require": {
+        "php": ">=8.1"
+    }
+}
