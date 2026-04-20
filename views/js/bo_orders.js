@@ -249,6 +249,9 @@
                 attachTooltip(cell, type, orderId);
             });
         });
+
+        // Enrichissement de la preview row (ligne dépliable) pour les commandes C&C
+        initPreviewRowEnricher(table);
     }
 
     // -------------------------------------------------------------------------
@@ -288,6 +291,118 @@
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+    }
+
+    // -------------------------------------------------------------------------
+    // Preview Row — enrichissement du nom du transporteur C&C
+    // -------------------------------------------------------------------------
+
+    /**
+     * Enrichit la ligne dépliable (preview row PS9) quand elle s'ouvre.
+     *
+     * Stratégie :
+     * 1. Écoute les clics sur .preview-toggle dans la grille
+     * 2. Récupère l'orderId depuis la checkbox de la ligne parente
+     * 3. Appelle deliveryAction (avec cache) → si C&C (clickcollect !== null),
+     *    remplace le texte "Retrait en boutique" par le carrier enrichi
+     * 4. Détecte l'injection de tr.preview-row via MutationObserver (la row
+     *    est injectée de façon asynchrone par PS9 après le clic)
+     *
+     * Ne touche à rien si :
+     * - La commande n'est pas C&C (clickcollect === null)
+     * - Le nœud texte attendu n'est pas trouvé (fail silencieux)
+     */
+    function initPreviewRowEnricher(table) {
+        table.addEventListener('click', function (e) {
+            // Cible : le toggle de preview (flèche ▶ de la ligne)
+            const toggle = e.target.closest('.preview-toggle');
+            if (!toggle) return;
+
+            // La ligne parente de données (tr contenant la checkbox et le toggle)
+            const dataRow = toggle.closest('tr');
+            if (!dataRow) return;
+
+            const checkbox = dataRow.querySelector('.js-bulk-action-checkbox');
+            if (!checkbox) return;
+
+            const orderId = parseInt(checkbox.value, 10);
+            if (!orderId) return;
+
+            // Observer sur le tbody pour détecter l'injection de tr.preview-row
+            const observer = new MutationObserver(function (mutations) {
+                for (const mutation of mutations) {
+                    for (const node of mutation.addedNodes) {
+                        if (
+                            node.nodeType === 1 &&
+                            node.tagName === 'TR' &&
+                            node.classList.contains('preview-row')
+                        ) {
+                            observer.disconnect();
+                            applyCarrierEnrichment(node, orderId);
+                            return;
+                        }
+                    }
+                }
+            });
+
+            observer.observe(table.querySelector('tbody') || table, {
+                childList: true,
+                subtree: false,
+            });
+
+            // Sécurité : déconnecte l'observer après 3s si rien n'est injecté
+            setTimeout(() => observer.disconnect(), 3000);
+        });
+    }
+
+    /**
+     * Remplace le texte du transporteur dans la preview row si la commande
+     * est un retrait boutique (clickcollect !== null).
+     *
+     * @param {HTMLElement} previewRow  La tr.preview-row injectée par PS9
+     * @param {number}      orderId     L'ID de la commande
+     */
+    async function applyCarrierEnrichment(previewRow, orderId) {
+        try {
+            const data = await fetchTooltipData('delivery', orderId);
+
+            // Si ce n'est pas une commande C&C → ne rien faire
+            if (!data || data.clickcollect === null || data.clickcollect === undefined) {
+                return;
+            }
+
+            // Cherche le nœud texte du transporteur dans le bloc shipping
+            // Structure PS9 : div[data-role="shipping-details"] > p > strong + texte
+            const shippingBlock = previewRow.querySelector('[data-role="shipping-details"]');
+            if (!shippingBlock) return;
+
+            // Cherche le <strong> qui contient "Transporteur" (insensible à la casse)
+            const strongs = shippingBlock.querySelectorAll('strong');
+            let carrierTextNode = null;
+
+            for (const strong of strongs) {
+                if (/transporteur/i.test(strong.textContent)) {
+                    // Le texte du transporteur est le nœud texte suivant
+                    let sibling = strong.nextSibling;
+                    while (sibling) {
+                        if (sibling.nodeType === 3 && sibling.textContent.trim()) {
+                            carrierTextNode = sibling;
+                            break;
+                        }
+                        sibling = sibling.nextSibling;
+                    }
+                    break;
+                }
+            }
+
+            if (!carrierTextNode) return;
+
+            // Remplace le texte par le carrier enrichi (déjà composé côté PHP)
+            carrierTextNode.textContent = ' ' + data.carrier;
+
+        } catch (e) {
+            // Fail silencieux : ne jamais perturber l'affichage natif
+        }
     }
 
     // -------------------------------------------------------------------------
